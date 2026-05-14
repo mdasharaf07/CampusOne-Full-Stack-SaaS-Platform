@@ -1,137 +1,316 @@
-## 🚀 Step 1: Environment Setup & Installation
-First, ensure you have a virtual environment created and all necessary dependencies installed.
+# CampusOne
 
-### 🍎 For macOS / Linux
-```bash
-# Create virtual environment
-python3 -m venv venv
+A production-oriented full-stack college event management and automation platform designed to streamline the complete lifecycle of campus events, cultural fests, workshops, and student activities.
 
-# Activate virtual environment
-source venv/bin/activate
+CampusOne enables institutions, clubs, and student organizations to manage registrations, payments, attendance, invoicing, notifications, and certificate distribution through a centralized and scalable web platform.
 
-# Install dependencies
-pip install -r requirements.txt
+---
+
+## Overview
+
+CampusOne follows a decoupled client-server architecture with a lightweight frontend and a modular Python backend. The platform is built to automate operational workflows involved in college event management while maintaining scalability, security, and clean system organization.
+
+The application integrates multiple third-party services including Razorpay, Google Sheets API, Google Drive API, Gmail SMTP, and PostgreSQL to deliver a real-world SaaS-like experience.
+
+---
+
+## Core Features
+
+### Authentication & Security
+- JWT-based authentication and session handling
+- Role-Based Access Control (RBAC)
+- AES-256 and RSA encryption support
+- Secure password reset using Email OTP verification
+- Protected dashboard routing and authorization checks
+
+### Event Management
+- Create and manage cultural events and workshops
+- Student event registration system
+- Upcoming events listing and participation tracking
+- Admin event monitoring dashboard
+
+### Payment Integration
+- Razorpay payment gateway integration
+- Dynamic payment verification workflow
+- Automated transaction handling
+
+### Invoice & Ticket Generation
+- Automated PDF invoice and ticket generation
+- Local invoice storage management
+- Downloadable payment confirmations
+
+### Cloud Automation
+- Google Sheets synchronization using Service Accounts
+- Automated certificate generation and distribution
+- Google Drive integration for cloud-hosted assets
+
+### Notification System
+- Email-based OTP authentication
+- Registration confirmation emails
+- Event reminder notifications
+- Automated communication workflows
+
+---
+
+## Tech Stack
+
+### Frontend
+- HTML5
+- JavaScript
+- Tailwind CSS
+
+### Backend
+- Python
+- Flask / REST APIs
+
+### Database
+- PostgreSQL
+- Neon.tech
+
+### Integrations & Services
+- Razorpay API
+- Google Sheets API
+- Google Drive API
+- Gmail SMTP
+
+### Security
+- JWT Authentication
+- AES-256 Encryption
+- RSA Encryption
+
+---
+
+## System Architecture
+
+```text
+Client (Frontend)
+        │
+        ▼
+REST API Layer
+        │
+        ▼
+Python Backend Services
+        │
+ ┌──────┼──────────┬───────────┬───────────┐
+ ▼      ▼          ▼           ▼           ▼
+PostgreSQL   Razorpay   Google APIs   Email Service
 ```
 
-### 🪟 For Windows
+---
+
+## Project Structure
+
+```text
+CampusOne/
+│
+├── frontend/
+│   ├── dashboard/
+│   ├── js/
+│   ├── index.html
+│   ├── sign-in.html
+│   ├── sign-up.html
+│   └── upcoming-events.html
+│
+├── backend/
+│   ├── routes/
+│   ├── utils/
+│   ├── invoices/
+│   ├── uploads/
+│   ├── app.py
+│   ├── database_creation.py
+│   └── database_full_schema.sql
+│
+├── requirements.txt
+├── README.md
+└── .gitignore
+```
+
+---
+
+## Installation & Setup
+
+### Clone Repository
+
 ```bash
-# Create virtual environment
+git clone https://github.com/mdasharaf07/CampusOne-Full-Stack-SaaS-Platform.git
+```
+
+### Navigate to Project
+
+```bash
+cd CampusOne-Full-Stack-SaaS-Platform
+```
+
+### Create Virtual Environment
+
+```bash
 python -m venv venv
+```
 
-# Activate virtual environment
-.\venv\Scripts\activate
+### Activate Environment
 
-# Install dependencies
+#### Windows
+
+```bash
+venv\Scripts\activate
+```
+
+#### Linux / macOS
+
+```bash
+source venv/bin/activate
+```
+
+### Install Dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
 ---
 
-## 🛠️ Step 2: Automated Security Key Generation
-Once your environment is ready, run our utility to generate high-entropy security keys.
-**This script automatically handles:**
-- `JWT_SECRET`: For secure user session tokens.
-- `CRYPTO_KEY`: For symmetric AES-256 encryption of sensitive data.
-- `RSA_PRIVATE_KEY` & `RSA_PUBLIC_KEY`: For asymmetric signing protocols.
+## Environment Variables
 
----
-## 📧 Step 3: Email Configuration (Gmail SMTP)
-The system sends OTPs and notifications via Gmail.
-
-1. **MAIL_USERNAME**: Your Gmail address (e.g., `example@gmail.com`).
-2. **MAIL_PASSWORD**: You must use a **Google App Password**.
-   - Go to [Google App Passwords](https://myaccount.google.com/apppasswords).
-   - Select "Mail" and "Other (Custom Name)".
-   - Copy the **16-character code** (e.g., `qzwd nqle woqu llsw`) and paste it here.
-
----
-
-## ☁️ Step 4: Google Cloud & Sheets Integration
-This integration is essential for generating automated certificates (stored in Google Drive) and syncing event data to a Master Spreadsheet.
-
-### A. Create a Google Cloud Project
-1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
-2. Click on **Select a project** > **New Project**.
-3. Give it a name like `CampusHub-System` and click **Create**.
-
-### B. Enable Required APIs
-You must enable the following APIs for your project:
-1. Search for **"Google Drive API"** and click **Enable**.
-2. Search for **"Google Sheets API"** and click **Enable**.
-
-### C. Create a Service Account & JSON Key
-1. In the sidebar, go to **APIs & Services** > **Credentials**.
-2. Click **Create Credentials** > **Service Account**.
-3. Enter a name (e.g., `campushub-bot`) and click **Create and Continue**.
-4. Grant the role **Editor** (or owner) and click **Done**.
-5. Click on the newly created Service Account in the list.
-6. Go to the **Keys** tab > **Add Key** > **Create New Key**.
-7. Select **JSON** and click **Create**. A file will download to your computer.
-8. **Action**: Open this file, copy its **entire content**, and paste it into `.env` as `GOOGLE_CREDENTIALS_JSON`.
-
-### D. Setup the Master Spreadsheet
-1. Create a new Google Sheet at [sheets.new](https://sheets.new).
-2. Copy the URL from your browser's address bar.
-3. **Action**: Paste the URL into `.env` as `DEFAULT_MASTER_GSHEET_LINK`.
-4. **Action**: Click **Share** on the top right of the Google Sheet.
-5. **Critical**: Invite the `client_email` address (found inside your `GOOGLE_CREDENTIALS_JSON`) as an **Editor**.
-
----
-
-## 🗄️ Step 5: Database Connection & Initialization
-The system is optimized for PostgreSQL (Neon.tech).
-
-1. **DATABASE_URL**: 
-   - Create a free PostgreSQL instance on [Neon.tech](https://neon.tech/).
-   - Copy the **Connection String** (e.g., `postgresql://neondb_owner:pass@host/neondb?sslmode=require`).
-   - Paste it into your `.env`.
-
-2. **Initialize Tables**:
-   Run the following command to create all tables, triggers, and prepopulate the system data:
-   ```bash
-   python3 backend/database_creation.py
-   ```
-   *This script uses the centralized `backend/database_full_schema.sql` to ensure your local or cloud database is perfectly synchronized.*
-
----
-
-## 💳 Step 6: Payment Gateway (Razorpay)
-To enable paid event registrations:
-
-1. **RAZORPAY_KEY_ID**: Found in your Razorpay Dashboard -> Settings -> API Keys.
-2. **RAZORPAY_KEY_SECRET**: Generated alongside your Key ID.
-
----
-
-## ⚠️ Security Best Practices
-> [!CAUTION]
-> **NEVER** commit your `.env` file to GitHub or any public repository. 
-> The `.env` file contains absolute power over your database, emails, and payments. Always ensure it is listed in your `.gitignore` file.
-
----
-
-## 📜 Full .env Template
-If you are starting from zero, copy this template:
+Create a `.env` file inside the backend directory.
 
 ```env
-# Security (Generated via script)
-JWT_SECRET=''
-CRYPTO_KEY=''
-RSA_PRIVATE_KEY=''
-RSA_PUBLIC_KEY=''
+JWT_SECRET=
+CRYPTO_KEY=
 
-# Email
-MAIL_USERNAME=""
-MAIL_PASSWORD=""
+MAIL_USERNAME=
+MAIL_PASSWORD=
 
-# Database
-DATABASE_URL=""
+GOOGLE_CREDENTIALS_JSON=
+DEFAULT_MASTER_GSHEET_LINK=
 
-# Google Integrations
-GOOGLE_CREDENTIALS_JSON=''
-DEFAULT_MASTER_GSHEET_LINK=""
+DATABASE_URL=
 
-# Payments
-RAZORPAY_KEY_ID=""
-RAZORPAY_KEY_SECRET=""
+RSA_PRIVATE_KEY=
+RSA_PUBLIC_KEY=
+
+RAZORPAY_KEY_ID=
+RAZORPAY_KEY_SECRET=
 ```
+
+---
+
+## Database Setup
+
+Run the schema creation script:
+
+```bash
+python backend/database_creation.py
+```
+
+Or manually execute:
+
+```bash
+backend/database_full_schema.sql
+```
+
+inside PostgreSQL.
+
+---
+
+## Running the Application
+
+### Start Backend Server
+
+```bash
+python backend/app.py
+```
+
+### Launch Frontend
+
+Open:
+
+```text
+frontend/index.html
+```
+
+using Live Server or any local static server.
+
+---
+
+## API Modules
+
+### Authentication
+- Sign In
+- Sign Up
+- Password Recovery
+- OTP Verification
+
+### Event Services
+- Event Creation
+- Event Registration
+- Attendance Management
+
+### Financial Services
+- Payment Verification
+- Invoice Generation
+
+### Automation Services
+- Google Sheets Sync
+- Certificate Distribution
+- Email Notifications
+
+---
+
+## Security Practices
+
+- Encrypted credential handling
+- Token-based authentication
+- Route protection middleware
+- Secure API communication
+- Role-based authorization layers
+
+---
+
+## Future Improvements
+
+- Docker containerization
+- CI/CD deployment pipelines
+- Redis caching layer
+- Real-time notifications
+- Admin analytics dashboard
+- Mobile application support
+- AI-powered recommendation engine
+
+---
+
+## Use Cases
+
+- College cultural fest management
+- Workshop registration systems
+- Technical symposium operations
+- Student club event coordination
+- Institutional event automation
+
+---
+
+## Repository Topics
+
+```text
+full-stack-project
+college-event-management
+python-backend
+postgresql
+tailwindcss
+jwt-authentication
+razorpay-integration
+google-sheets-api
+automation-platform
+saas-platform
+```
+
+---
+
+## License
+
+This project is intended for educational, portfolio, and learning purposes.
+
+---
+
+## Author
+
+[Mohamed Asharaf](https://github.com/mdasharaf07)
